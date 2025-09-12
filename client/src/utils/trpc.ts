@@ -1,5 +1,6 @@
 import { createTRPCReact } from '@trpc/react-query';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import type { AppRouter } from '../../../server/src/router';
 
 // Create TRPC React hooks
@@ -20,5 +21,5 @@ export const trpcClient = createTRPCClient<AppRouter>({
   ],
 });
 
-export type RouterInputs = Parameters<AppRouter['_def']['procedures'][keyof AppRouter['_def']['procedures']]['call']>[0];
-export type RouterOutputs = Awaited<ReturnType<AppRouter['_def']['procedures'][keyof AppRouter['_def']['procedures']]['call']>>;
+export type RouterInputs = inferRouterInputs<AppRouter>;
+export type RouterOutputs = inferRouterOutputs<AppRouter>;
