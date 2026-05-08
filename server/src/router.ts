@@ -1,10 +1,13 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
+import superjson from 'superjson';
 import { TodoDatabase } from './db.js';
-import { createTodoSchema, updateTodoSchema } from './types.js';
+import { createTodoSchema, updateTodoSchema } from '@trpc-todo/types';
 
 // Initialize TRPC
-const t = initTRPC.create();
+const t = initTRPC.create({
+  transformer: superjson,
+});
 
 export const router = t.router;
 export const publicProcedure = t.procedure;

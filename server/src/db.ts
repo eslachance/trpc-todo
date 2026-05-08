@@ -1,5 +1,5 @@
 import Enmap from 'enmap';
-import { Todo } from './types.js';
+import type { Todo } from '@trpc-todo/types';
 
 // Initialize Enmap database for todos
 export const todosDb = new Enmap<Todo>({
@@ -28,7 +28,7 @@ export class TodoDatabase {
   }
 
   static async findById(id: string): Promise<Todo | undefined> {
-    return todosDb.get(id);
+    return todosDb.get(id) ?? undefined;
   }
 
   static async update(id: string, updates: Partial<Omit<Todo, 'id' | 'createdAt'>>): Promise<Todo | undefined> {
