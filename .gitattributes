@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+# Common text formats
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# JS/TS
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+
+# Shell
+*.sh text eol=lf
+
