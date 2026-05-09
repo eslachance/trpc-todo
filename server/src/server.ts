@@ -1,21 +1,9 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { appRouter } from './router.js';
 
 const app = new Hono();
-
-// Enable CORS for the client
-app.use(
-  '/api/*',
-  cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'], // Vite dev server and potential client ports
-    allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  })
-);
 
 // Health check endpoint
 app.get('/health', (c) => {

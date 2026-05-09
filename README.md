@@ -15,14 +15,14 @@ This project serves as a **complete reference implementation** for:
 ### Backend (`/server`)
 - **[Hono](https://hono.dev/)** - Fast, lightweight web framework
 - **[TRPC](https://trpc.io/)** - End-to-end typesafe APIs
-- **[Enmap](https://enmap.alterion.dev/)** - Persistent file-based database
+- **[Enmap](https://enmap.alterion.dev/)** - Persistent file-based database (for demo purposes only)
 - **TypeScript** - Full type safety
 - **Zod** - Runtime schema validation
 
 ### Frontend (`/client`)
 - **React 19** - Latest React with modern features
 - **[Vite](https://vite.dev/)** - Lightning-fast build tool
-- **[Tailwind CSS 4](https://tailwindcss.com/)** - Utility-first styling (no config!)
+- **[Tailwind CSS 4](https://tailwindcss.com/)** - Utility-first styling
 - **TRPC Client + React Query** - Type-safe API calls with caching
 - **TypeScript** - End-to-end type safety
 
@@ -78,7 +78,6 @@ app.all('/api/trpc/*', (c) => {
 
 **Key concepts demonstrated:**
 - TRPC adapter integration with Hono
-- CORS configuration for cross-origin requests
 - Proper endpoint routing structure
 
 ### 2. **TRPC Router Definition** - [`server/src/router.ts`](./server/src/router.ts)
@@ -276,7 +275,7 @@ const toggleMutation = trpc.todo.toggle.useMutation({
 
 This project uses **Enmap**, which depends on **`better-sqlite3`** (a native addon). pnpm may block native build scripts unless they are explicitly allowlisted.
 
-This repo already includes the allowlist under `pnpm.onlyBuiltDependencies` in the root `package.json`. If you ever see a bindings error again, the fix is:
+This repo already includes the allowlist under `pnpm.onlyBuiltDependencies` in the root `package.json`. If you ever see a bindings error, the fix is:
 
 ```bash
 pnpm rebuild better-sqlite3
@@ -335,5 +334,3 @@ This example demonstrates:
 - [Enmap Documentation](https://enmap.alterion.dev/)
 
 ---
-
-*This example showcases production-ready patterns for building type-safe, modern full-stack applications with TRPC.*
