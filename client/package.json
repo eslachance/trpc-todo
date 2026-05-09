@@ -11,28 +11,28 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.13",
-    "@tanstack/react-query": "^5.87.4",
+    "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/react-query": "^5.100.9",
     "@trpc-todo/server": "workspace:*",
     "@trpc-todo/types": "workspace:*",
-    "@trpc/client": "^11.5.1",
-    "@trpc/react-query": "^11.5.1",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "@trpc/client": "^11.17.0",
+    "@trpc/react-query": "^11.17.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "superjson": "^2.2.6"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
-    "@trpc/server": "^11.5.1",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^5.0.0",
-    "eslint": "^9.33.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.2"
+    "@eslint/js": "^10.0.1",
+    "@trpc/server": "^11.17.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^8.0.11"
   }
 }
