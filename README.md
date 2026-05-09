@@ -15,7 +15,6 @@ This project serves as a **complete reference implementation** for:
 ### Backend (`/server`)
 - **[Hono](https://hono.dev/)** - Fast, lightweight web framework
 - **[TRPC](https://trpc.io/)** - End-to-end typesafe APIs
-- **[Enmap](https://enmap.alterion.dev/)** - Persistent file-based database (for demo purposes only)
 - **TypeScript** - Full type safety
 - **Zod** - Runtime schema validation
 
@@ -36,7 +35,7 @@ trpc-todo/
 │   ├── src/
 │   │   ├── server.ts         # 🔑 Main server setup with Hono + TRPC
 │   │   ├── router.ts         # 🔑 TRPC router with all procedures
-│   │   └── db.ts             # Database layer with Enmap
+│   │   └── db.ts             # Demo data layer (JSONPlaceholder + in-memory cache)
 │   ├── package.json          # Server dependencies
 │   └── tsconfig.json         # TypeScript config
 └── client/                   # Frontend application
@@ -271,15 +270,9 @@ const toggleMutation = trpc.todo.toggle.useMutation({
    - Frontend: http://localhost:5173
    - API Health: http://localhost:3001/health
 
-### Native dependencies (Enmap / better-sqlite3)
+### Data source note (JSONPlaceholder)
 
-This project uses **Enmap**, which depends on **`better-sqlite3`** (a native addon). pnpm may block native build scripts unless they are explicitly allowlisted.
-
-This repo already includes the allowlist under `pnpm.onlyBuiltDependencies` in the root `package.json`. If you ever see a bindings error, the fix is:
-
-```bash
-pnpm rebuild better-sqlite3
-```
+This demo uses **JSONPlaceholder** (`https://jsonplaceholder.typicode.com/todos`) as a fake backend and keeps an **in-memory cache** on the server so create/update/delete feel real while the process is running.
 
 ## 🧰 Workspace scripts
 
@@ -314,7 +307,7 @@ This example demonstrates:
 - Request batching with HTTP batch link
 - Automatic query invalidation
 - Background refetching
-- File-based persistence with Enmap
+
 
 ## 🔍 Key Features Demonstrated
 
@@ -331,6 +324,5 @@ This example demonstrates:
 - [React Query Guide](https://tanstack.com/query/latest)
 - [Hono Framework](https://hono.dev/)
 - [Tailwind CSS v4](https://tailwindcss.com/blog/tailwindcss-v4-alpha)
-- [Enmap Documentation](https://enmap.alterion.dev/)
 
 ---

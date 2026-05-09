@@ -1,38 +1,86 @@
-import Enmap from 'enmap';
 import type { Todo } from '@trpc-todo/types';
 
-// Initialize Enmap database for todos
-export const todosDb = new Enmap<Todo>({
-  name: 'todos',
-});
+/**
+ * NOTE: This file exists only to make the demo feel "real".
+ *
+ * We intentionally use JSONPlaceholder (`https://jsonplaceholder.typicode.com/todos`) as a fake backend
+ * (it's public, fast, and doesn't require a DB). JSONPlaceholder does not actually persist updates.
+ *
+ * To keep the app interactive while the server is running, we keep an in-memory `Map()` cache.
+ * That cache provides pseudo-persistence for creates/updates/deletes until the process restarts.
+ */
+
+type JsonPlaceholderTodo = {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
+};
+
+const jsonPlaceholderBaseUrl = 'https://jsonplaceholder.typicode.com';
+
+const todosCache = new Map<number, Todo>();
+let hasLoadedRemoteTodos = false;
+let nextLocalTodoId = 100000;
+
+function toTodo(remoteTodo: JsonPlaceholderTodo): Todo {
+  return {
+    userId: remoteTodo.userId,
+    id: remoteTodo.id,
+    title: remoteTodo.title,
+    completed: remoteTodo.completed,
+  };
+}
+
+async function loadRemoteTodosOnce(): Promise<void> {
+  if (hasLoadedRemoteTodos) return;
+
+  const response = await fetch(`${jsonPlaceholderBaseUrl}/todos`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch remote todos: ${response.status} ${response.statusText}`);
+  }
+
+  const remoteTodos = (await response.json()) as JsonPlaceholderTodo[];
+  for (const remoteTodo of remoteTodos) {
+    const todo = toTodo(remoteTodo);
+    todosCache.set(todo.id, todo);
+  }
+
+  const maxRemoteId = remoteTodos.reduce((maxId, todo) => Math.max(maxId, todo.id), 0);
+  nextLocalTodoId = Math.max(nextLocalTodoId, maxRemoteId + 1);
+  hasLoadedRemoteTodos = true;
+}
 
 // Helper functions for database operations
 export class TodoDatabase {
-  static async create(todo: Omit<Todo, 'id' | 'createdAt' | 'updatedAt'>): Promise<Todo> {
-    const id = Math.random().toString(36).substring(2) + Date.now().toString(36);
-    const now = new Date();
-    
+  static async create(todo: Omit<Todo, 'id'>): Promise<Todo> {
+    await loadRemoteTodosOnce();
+
+    const id = nextLocalTodoId++;
+
     const newTodo: Todo = {
       id,
       ...todo,
-      createdAt: now,
-      updatedAt: now,
     };
 
-    todosDb.set(id, newTodo);
+    todosCache.set(id, newTodo);
     return newTodo;
   }
 
   static async findAll(): Promise<Todo[]> {
-    return todosDb.values();
+    await loadRemoteTodosOnce();
+    return Array.from(todosCache.values());
   }
 
-  static async findById(id: string): Promise<Todo | undefined> {
-    return todosDb.get(id) ?? undefined;
+  static async findById(id: number): Promise<Todo | undefined> {
+    await loadRemoteTodosOnce();
+    return todosCache.get(id) ?? undefined;
   }
 
-  static async update(id: string, updates: Partial<Omit<Todo, 'id' | 'createdAt'>>): Promise<Todo | undefined> {
-    const existingTodo = todosDb.get(id);
+  static async update(id: number, updates: Partial<Omit<Todo, 'id'>>): Promise<Todo | undefined> {
+    await loadRemoteTodosOnce();
+
+    const existingTodo = todosCache.get(id);
     if (!existingTodo) {
       return undefined;
     }
@@ -41,16 +89,15 @@ export class TodoDatabase {
       ...existingTodo,
       ...updates,
       id, // Ensure id doesn't change
-      createdAt: existingTodo.createdAt, // Preserve createdAt
-      updatedAt: new Date(),
     };
 
-    todosDb.set(id, updatedTodo);
+    todosCache.set(id, updatedTodo);
     return updatedTodo;
   }
 
-  static async delete(id: string): Promise<boolean> {
-    todosDb.delete(id);
-    return true;
+  static async delete(id: number): Promise<boolean> {
+    await loadRemoteTodosOnce();
+
+    return todosCache.delete(id);
   }
 }

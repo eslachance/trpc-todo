@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import { trpc } from '../utils/trpc';
-
-interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { Todo } from '@trpc-todo/types';
 
 interface TodoItemProps {
   todo: Todo;

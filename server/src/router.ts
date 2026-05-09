@@ -18,7 +18,7 @@ export const todoRouter = router({
   getAll: publicProcedure.query(async () => {
     try {
       const todos = await TodoDatabase.findAll();
-      return todos.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      return todos.sort((a, b) => b.id - a.id);
     } catch (error) {
       throw new Error('Failed to fetch todos');
     }
@@ -26,7 +26,7 @@ export const todoRouter = router({
 
   // Get todo by ID
   getById: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number().int().positive() }))
     .query(async ({ input }) => {
       try {
         const todo = await TodoDatabase.findById(input.id);
@@ -45,6 +45,7 @@ export const todoRouter = router({
     .mutation(async ({ input }) => {
       try {
         const todo = await TodoDatabase.create({
+          userId: input.userId,
           title: input.title,
           completed: false,
         });
@@ -58,7 +59,7 @@ export const todoRouter = router({
   update: publicProcedure
     .input(
       z.object({
-        id: z.string(),
+        id: z.number().int().positive(),
         data: updateTodoSchema,
       })
     )
@@ -76,7 +77,7 @@ export const todoRouter = router({
 
   // Delete a todo
   delete: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number().int().positive() }))
     .mutation(async ({ input }) => {
       try {
         const deleted = await TodoDatabase.delete(input.id);
@@ -91,7 +92,7 @@ export const todoRouter = router({
 
   // Toggle todo completion status
   toggle: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number().int().positive() }))
     .mutation(async ({ input }) => {
       try {
         const existingTodo = await TodoDatabase.findById(input.id);
