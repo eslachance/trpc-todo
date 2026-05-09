@@ -30,11 +30,12 @@ This project serves as a **complete reference implementation** for:
 
 ```
 trpc-todo/
+├── types/                     # Shared types & schemas (workspace package)
+│   └── src/                   # Zod schemas + inferred TS types
 ├── server/                    # Backend application
 │   ├── src/
 │   │   ├── server.ts         # 🔑 Main server setup with Hono + TRPC
 │   │   ├── router.ts         # 🔑 TRPC router with all procedures
-│   │   ├── types.ts          # 🔑 Shared TypeScript types & Zod schemas
 │   │   └── db.ts             # Database layer with Enmap
 │   ├── package.json          # Server dependencies
 │   └── tsconfig.json         # TypeScript config
@@ -47,6 +48,12 @@ trpc-todo/
     ├── vite.config.ts        # 🔑 Vite config with proxy setup
     └── package.json          # Client dependencies
 ```
+
+This repo is a **pnpm workspace** managed with **Turborepo**:
+
+- `pnpm-workspace.yaml`: workspace package list
+- `turbo.json`: task orchestration (`dev`, `build`, `lint`, `typecheck`)
+- Shared code is published internally via workspace packages (no `../../../server/src/*` imports)
 
 ## 🔑 Key Implementation Files
 
@@ -104,7 +111,7 @@ export const todoRouter = router({
 - Error handling and type safety
 - Nested router organization
 
-### 3. **Type Definitions** - [`server/src/types.ts`](./server/src/types.ts)
+### 3. **Shared Type Definitions** - [`types/src`](./types/src)
 
 Shows proper schema definition and type inference:
 
@@ -132,7 +139,7 @@ Essential client setup for type-safe API calls:
 
 ```typescript
 import { createTRPCReact } from '@trpc/react-query';
-import type { AppRouter } from '../../../server/src/router';
+import type { AppRouter } from '@trpc-todo/server';
 
 export const trpc = createTRPCReact<AppRouter>();
 
@@ -253,25 +260,36 @@ const toggleMutation = trpc.todo.toggle.useMutation({
 
 1. **Install dependencies:**
    ```bash
-   # Server
-   cd server && npm install
-   
-   # Client  
-   cd ../client && npm install
+   pnpm install
    ```
 
-2. **Start development servers:**
+2. **Start development (client + server together):**
    ```bash
-   # Terminal 1 - Server (port 3001)
-   cd server && npm run dev
-   
-   # Terminal 2 - Client (port 5173)
-   cd client && npm run dev
+   pnpm dev
    ```
 
 3. **Open application:**
    - Frontend: http://localhost:5173
    - API Health: http://localhost:3001/health
+
+### Native dependencies (Enmap / better-sqlite3)
+
+This project uses **Enmap**, which depends on **`better-sqlite3`** (a native addon). pnpm may block native build scripts unless they are explicitly allowlisted.
+
+This repo already includes the allowlist under `pnpm.onlyBuiltDependencies` in the root `package.json`. If you ever see a bindings error again, the fix is:
+
+```bash
+pnpm rebuild better-sqlite3
+```
+
+## 🧰 Workspace scripts
+
+From the repo root:
+
+- `pnpm dev`: run client + server in parallel via Turbo
+- `pnpm build`: build all packages
+- `pnpm typecheck`: typecheck all packages
+- `pnpm lint`: lint all packages
 
 ## 🎓 Learning Points
 
