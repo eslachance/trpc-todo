@@ -1,0 +1,14 @@
+**/node_modules
+**/.turbo
+**/.pnpm-store
+**/.pnpm
+**/.vite
+**/dist
+**/.cache
+**/.DS_Store
+**/*.log
+.git
+.github
+uploads
+agent-transcripts
+
