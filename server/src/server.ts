@@ -10,10 +10,20 @@ import { getMimeType } from 'hono/utils/mime';
 const app = new Hono();
 
 function getClientDistDir() {
-  // Running from `server/` (both dev and `node dist/server.js`), the client build is at `../client/dist`
-  return process.env.CLIENT_DIST_DIR
-    ? path.resolve(process.env.CLIENT_DIST_DIR)
-    : path.resolve(process.cwd(), '../client/dist');
+  // Priority:
+  // 1) explicit override
+  // 2) production build output colocated with server build: `server/dist/public`
+  // 3) dev/workspace build output: `client/dist`
+  if (process.env.CLIENT_DIST_DIR) {
+    return path.resolve(process.env.CLIENT_DIST_DIR);
+  }
+
+  const colocatedDistDir = path.resolve(process.cwd(), 'dist/public');
+  if (existsSync(colocatedDistDir)) {
+    return colocatedDistDir;
+  }
+
+  return path.resolve(process.cwd(), '../client/dist');
 }
 
 async function tryServeDistFile(requestPath: string) {
