@@ -279,9 +279,30 @@ This demo uses **JSONPlaceholder** (`https://jsonplaceholder.typicode.com/todos`
 From the repo root:
 
 - `pnpm dev`: run client + server in parallel via Turbo
-- `pnpm build`: build all packages
+- `pnpm build`: build everything into a runnable `dist/` folder (non-Docker)
+- `pnpm build:docker`: build a Docker image (recommended)
 - `pnpm typecheck`: typecheck all packages
 - `pnpm lint`: lint all packages
+
+## 🏗️ Building for production
+
+### Docker (recommended)
+
+This is the most repeatable / “industry standard” way to build and run the app.
+
+```bash
+pnpm build:docker
+docker run --rm -p 3001:3001 trpc-todo
+```
+
+### Non-Docker build (convenience)
+
+If you just want a local build output for the current machine without Docker:
+
+```bash
+pnpm build
+node dist/server.js
+```
 
 ## 🎓 Learning Points
 
